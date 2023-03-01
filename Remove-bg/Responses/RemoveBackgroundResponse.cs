@@ -7,7 +7,7 @@ namespace Removebg.Responses
   /// <summary>
   /// Response returned from API for backgroung remove request.
   /// </summary>
-  public class BackgroundRemoveResponse
+  public class RemoveBackgroundResponse
   {
     /// <summary>
     /// Image with the background removed.

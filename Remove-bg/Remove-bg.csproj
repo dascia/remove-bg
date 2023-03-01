@@ -56,7 +56,7 @@
     <Compile Include="RemovebgClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Exceptions\RemovebgAPIException.cs" />
-    <Compile Include="Responses\BackgroundRemovalResponse.cs" />
+    <Compile Include="Responses\RemoveBackgroundResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

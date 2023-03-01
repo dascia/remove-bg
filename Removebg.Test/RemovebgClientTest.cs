@@ -1,3 +1,5 @@
+using Removebg.Responses;
+
 namespace Removebg.Test
 {
   /// <summary>
@@ -25,9 +27,12 @@ namespace Removebg.Test
     /// <param name="requestParameter">The request parameter.</param>
     [Theory]
     [MemberData(nameof(GetRemoveBackgroundParameters))]
-    public async void RemoveBackground(string imagePath, RemoveBackgroundParameters requestParameter)
+    public async void RemoveBackgroundTest(string imagePath, RemoveBackgroundParameters requestParameter)
     {
-      await _removebgClient.RemoveBackground(imagePath, requestParameter);
+      RemoveBackgroundResponse removeBackgroundResponse = await _removebgClient.RemoveBackground(imagePath, requestParameter);
+      string imageNoBackground = Path.Combine(Path.GetDirectoryName(imagePath), "bgremoved.png");
+      removeBackgroundResponse.Image.Save(imageNoBackground);
+      Assert.NotNull(removeBackgroundResponse);
     }
 
     /// <summary>

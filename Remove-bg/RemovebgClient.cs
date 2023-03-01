@@ -37,7 +37,7 @@ namespace Removebg
     /// <exception cref="FileNotFoundException">The image to be uploaded was not found in the path specified.</exception>
     /// <exception cref="HttpRequestException">Problems communicating with the api server.</exception>
     /// <exception cref="RemovebgAPIException">It is fired when the API returns an error.</exception>
-    public async Task<BackgroundRemoveResponse> RemoveBackground(string imagePath, RemoveBackgroundParameters parameters)
+    public async Task<RemoveBackgroundResponse> RemoveBackground(string imagePath, RemoveBackgroundParameters parameters)
     {
       string urlRequestAddress = $"{Endpoints.Server}{Endpoints.BackgroundRemoval}";
       MultipartFormDataContent formDataContent = new MultipartFormDataContent();
@@ -45,7 +45,7 @@ namespace Removebg
       formDataContent.Add(new StringContent(parameters.ImageSize.GetDescription()), "size");
       formDataContent.Add(new StringContent(parameters.ForegroundType.GetDescription()), "type");
       formDataContent.Add(new StringContent(parameters.Crop.ToString()), "crop");
-      BackgroundRemoveResponse bgRemovalResponse = await Send<BackgroundRemoveResponse>(urlRequestAddress, formDataContent);
+      RemoveBackgroundResponse bgRemovalResponse = await Send<RemoveBackgroundResponse>(urlRequestAddress, formDataContent);
       return bgRemovalResponse;
     }
 
@@ -72,12 +72,12 @@ namespace Removebg
       }
       else
       {
-        JObject obj = JObject.Parse(jsonResponse);
-        JToken[] errorsTokens = obj.SelectToken("errors").ToArray();
+        JArray errorsTokens = responseObject["errors"].Value<JArray>();
         IList<string> errors = new List<string>();
         foreach (JToken errorToken in errorsTokens)
         {
-          errors.Add(errorToken.SelectToken("title").Value<string>());
+          JObject errorObject = errorToken.ToObject<JObject>();
+          errors.Add(errorObject["title"].Value<string>());
         }
         throw new RemovebgAPIException(response.StatusCode, errors);
       }
