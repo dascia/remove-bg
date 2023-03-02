@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="CustomConverters\Base64ToBitmapConverter.cs" />
     <Compile Include="Endpoints.cs" />
+    <Compile Include="Extensions\BitmapExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="ForegroundType.cs" />
     <Compile Include="ImageSize.cs" />

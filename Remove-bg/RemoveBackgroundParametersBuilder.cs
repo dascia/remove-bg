@@ -1,6 +1,6 @@
 ﻿namespace Removebg
 {
-  internal class RemoveBackgroundParametersBuilder
+  public class RemoveBackgroundParametersBuilder
   {
     private readonly RemoveBackgroundParameters _removeBgParameters;
 

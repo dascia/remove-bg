@@ -1,4 +1,5 @@
 using Removebg.Responses;
+using System.Drawing;
 
 namespace Removebg.Test
 {
@@ -8,16 +9,25 @@ namespace Removebg.Test
   public class RemovebgClientTest
   {
     /// <summary>
-    /// The removebg client
-    /// </summary>
-    private RemovebgClient _removebgClient;
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="RemovebgClientTest"/> class.
     /// </summary>
     public RemovebgClientTest()
+    { }
+
+    /// <summary>
+    /// Removes the background.
+    /// </summary>
+    /// <param name="imagePath">The image path.</param>
+    /// <param name="requestParameter">The request parameter.</param>
+    [Theory]
+    [MemberData(nameof(GetRemoveBackgroundParameters))]
+    public async void RemoveBackgroundTest(string apiKey, string imagePath, RemoveBackgroundParameters requestParameter)
     {
-      _removebgClient = new RemovebgClient("ogJz6xJFUeBJcsFZXR7CYhF2");
+      RemovebgClient client = new RemovebgClient(apiKey);
+      RemoveBackgroundResponse removeBackgroundResponse = await client.RemoveBackground(imagePath, requestParameter);
+      string imageNoBackground = Path.Combine(Path.GetDirectoryName(imagePath), "bgremoved.png");
+      removeBackgroundResponse.Image.Save(imageNoBackground);
+      Assert.NotNull(removeBackgroundResponse);
     }
 
     /// <summary>
@@ -27,10 +37,12 @@ namespace Removebg.Test
     /// <param name="requestParameter">The request parameter.</param>
     [Theory]
     [MemberData(nameof(GetRemoveBackgroundParameters))]
-    public async void RemoveBackgroundTest(string imagePath, RemoveBackgroundParameters requestParameter)
+    public async void RemoveBackgroundFromBitmapTest(string apiKey, string imagePath, RemoveBackgroundParameters requestParameter)
     {
-      RemoveBackgroundResponse removeBackgroundResponse = await _removebgClient.RemoveBackground(imagePath, requestParameter);
-      string imageNoBackground = Path.Combine(Path.GetDirectoryName(imagePath), "bgremoved.png");
+      RemovebgClient client = new RemovebgClient(apiKey);
+      Bitmap imageBitmap = new Bitmap(imagePath);
+      RemoveBackgroundResponse removeBackgroundResponse = await client.RemoveBackground(imageBitmap, requestParameter);
+      string imageNoBackground = Path.Combine(Path.GetDirectoryName(imagePath), "bitmap-bgremoved.png");
       removeBackgroundResponse.Image.Save(imageNoBackground);
       Assert.NotNull(removeBackgroundResponse);
     }
@@ -43,7 +55,8 @@ namespace Removebg.Test
     {
       yield return new object[]
       {
-        @"C:\Users\dascia\Desktop\test_image.jpg", 
+        "ogJz6xJFUeBJcsFZXR7CYhF2",
+        @"C:\Users\dascia\Desktop\test_image.jpg",
         new RemoveBackgroundParameters()
         {
           Crop  = true,
